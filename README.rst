@@ -32,6 +32,7 @@ Here, the path is set to bin in the directory obtained from github.
 ::
 
     $ git clone https://github.com/cbh34680/virget.git
+    $ chmod a+x ./virget/bin/virget
     $ export PATH="${PWD}/virget/bin:${PATH}"
     $ which virget
 
