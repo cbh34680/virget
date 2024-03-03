@@ -68,3 +68,17 @@ Comparison with virsh
     ----------------------------
      1    vhcalnplci   running
 
+    user@debian:~/src/lib(1:10823)$ sudo -E virget --pretty domblklist 1
+    {
+      "data": [
+        {
+          "target": "vda",
+          "source": "/disk/2/clone.d/ubuntu16/vhcalnplci.qcow2"
+        }
+      ]
+    }
+    user@debian:~/src/lib(1:10823)$ LANG=C sudo -E virsh domblklist 1
+     Target   Source
+    -----------------------------------------------------
+     vda      /disk/2/clone.d/ubuntu16/vhcalnplci.qcow2
+
