@@ -5,7 +5,7 @@
 function get_pybin() {
   local pyname
 
-  for pyname in python3 python not-found
+  for pyname in python3 python
   do
      which $pyname > /dev/null && which $pyname && return 0
   done

@@ -49,3 +49,22 @@ You can get similar results to some commands in virsh.
 .. note::
     ``sudo -E`` is required to connect to libvirtd
 
+Comparison with virsh
+
+::
+
+    $ sudo -E virget --pretty list 
+    {
+      "data": [
+        {
+          "id": 1,
+          "name": "vhcalnplci",
+          "state": "running"
+        }
+      ]
+    }
+    $ LANG=C sudo -E virsh list 
+     Id   Name         State
+    ----------------------------
+     1    vhcalnplci   running
+
