@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#set -eux
+
+function get_pybin() {
+  local pyname
+
+  for pyname in python3 python not-found
+  do
+     which $pyname > /dev/null && which $pyname && return 0
+  done
+
+  echo ERROR: Could not find command python 1>&2
+  return 1
+}
+
+pybin=$(get_pybin) || { exit 1; }
+
+thisdir=$(dirname $(readlink -f "${BASH_SOURCE:-$0}"))
+export PYTHONPATH="${thisdir}/..:${PYTHONPATH}"
+exec ${pybin} -m virpy "${@}"
+
+# EOF
