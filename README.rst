@@ -68,7 +68,7 @@ Comparison with virsh
     ----------------------------
      1    vhcalnplci   running
 
-    user@debian:~/src/lib(1:10823)$ sudo -E virget --pretty domblklist 1
+    $ sudo -E virget --pretty domblklist 1
     {
       "data": [
         {
@@ -77,7 +77,7 @@ Comparison with virsh
         }
       ]
     }
-    user@debian:~/src/lib(1:10823)$ LANG=C sudo -E virsh domblklist 1
+    $ LANG=C sudo -E virsh domblklist 1
      Target   Source
     -----------------------------------------------------
      vda      /disk/2/clone.d/ubuntu16/vhcalnplci.qcow2
