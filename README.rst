@@ -1,7 +1,7 @@
 virget
 =======
 
-It behaves similar to ``virsh`` for some commands.
+It behaves similar to virsh for some commands.
 The output is in JSON format, so it can be used for batch processing, etc.
 
 .. note::
@@ -39,7 +39,7 @@ Here, the path is set to bin in the directory obtained from github.
 Examples
 ---------------
 
-You can get similar results to some commands in ``virsh``.
+You can get similar results to some commands in virsh.
 
 ::
 
