@@ -47,5 +47,5 @@ You can get similar results to some commands in virsh.
     $ sudo -E virget help
 
 .. note::
-    ``sudo -E`` is required to connect to libvirt
+    ``sudo -E`` is required to connect to libvirtd
 
