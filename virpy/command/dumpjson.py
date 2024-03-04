@@ -15,7 +15,6 @@ python -c 'import libvirt; help(libvirt)'
 '''
 
 def create_handler(parser):
-
     parser.add_argument('domain')
     parser.add_argument('--security-info', action='store_true')
     parser.add_argument('--inactive', action='store_true')

@@ -16,7 +16,7 @@ vmstate=$(virget --pretty --query 'data.state' dominfo ${vmname})
 
 bkxml="${outdir}/${vmname}-backup.xml"
 
-virget backup-newxml ${vmname} -o "${outdir}" > "${bkxml}"
+virget backup-newxml ${vmname} "${outdir}" > "${bkxml}"
 virsh backup-begin ${vmname} --backupxml "${bkxml}"
 
 echo + phase 1/2

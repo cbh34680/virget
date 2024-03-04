@@ -18,17 +18,17 @@ python -c 'import libvirt; help(libvirt)'
 
 def create_handler(parser):
     parser.add_argument('domain')
-    parser.add_argument('--output-dir', '-o', required=True)
+    parser.add_argument('outdir')
 
     return BackupNewxmlCommand()
 
 
 class BackupNewxmlCommand(virpy.classes.Command):
     def run(self, conn, args):
-        output_dir = pathlib.Path(args.output_dir)
+        outdir = pathlib.Path(args.outdir)
 
-        if not output_dir.is_dir():
-            raise virpy.classes.ObjectNotFoundError(f"error: directory not exist '{args.output_dir}'")
+        if not outdir.is_dir():
+            raise virpy.classes.ObjectNotFoundError(f"directory not exist '{args.outdir}'")
 
         dom = virpy.utils.lookupDomain(conn, args.domain)
         #pprint.pprint(dir(dom))
@@ -51,7 +51,7 @@ class BackupNewxmlCommand(virpy.classes.Command):
             #pprint.pprint(params)
             xmlDisk = ET.SubElement(xmlDisks, 'disk', **params)
 
-            file_path = str((output_dir / pathlib.Path(obj['path']).name).resolve())
+            file_path = str((outdir / pathlib.Path(obj['path']).name).resolve())
 
             ET.SubElement(xmlDisk, 'driver', type='qcow2')
             ET.SubElement(xmlDisk, 'target', file=file_path)

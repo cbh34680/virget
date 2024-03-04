@@ -19,6 +19,33 @@ def strDomainJobType(x):
     return _db_strDomainJobType[x]
 
 
+# https://libvirt.org/html/libvirt-libvirt-network.html#virIPAddrType
+
+_db_strIPAddrType = {
+    libvirt.VIR_IP_ADDR_TYPE_IPV4: 'ipv4',
+    libvirt.VIR_IP_ADDR_TYPE_IPV6: 'ipv6',
+    #libvirt.VIR_IP_ADDR_TYPE_LAST: 'last',
+}
+
+def strIPAddrType(x):
+    return _db_strIPAddrType[x]
+
+
+# https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainInterfaceAddressesSource
+
+_db_idInterfaceAddressesSource = {
+    'lease': libvirt.VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_LEASE,
+    'agent': libvirt.VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_AGENT,
+    'arp':   libvirt.VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_ARP,
+}
+
+def idInterfaceAddressesSource(x):
+    return _db_idInterfaceAddressesSource[x]
+
+def strsInterfaceAddressesSource():
+    return _db_idInterfaceAddressesSource.keys()
+
+
 def isIndicateDomain(key, dom):
     try:
         id = int(key)
