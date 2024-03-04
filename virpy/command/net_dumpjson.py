@@ -4,6 +4,7 @@ import importlib
 import libvirt
 import pprint
 import virpy
+import virpy.classes
 import virpy.utils
 import xmltodict
 
@@ -23,7 +24,7 @@ def create_handler(parser):
     return NetDumpjsonCommand()
 
 
-class NetDumpjsonCommand(virpy.Command):
+class NetDumpjsonCommand(virpy.classes.Command):
     def run(self, conn, args):
 
         obj = virpy.utils.lookupNetwork(conn, args.network)
@@ -38,7 +39,7 @@ class NetDumpjsonCommand(virpy.Command):
         # https://libvirt.org/html/libvirt-libvirt-network.html#virNetworkGetXMLDesc
         xml = obj.XMLDesc(flags)
 
-        data = xmltodict.parse(xml, attr_prefix='', cdata_key='Value')
+        data = xmltodict.parse(xml, attr_prefix='', cdata_key=virpy.DUMP_XML_CDATA_KEY)
 
         return data
 

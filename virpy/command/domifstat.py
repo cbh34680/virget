@@ -3,9 +3,9 @@ import argparse
 import importlib
 import libvirt
 import pprint
-import xml.etree.ElementTree as ET
 
 import virpy
+import virpy.classes
 import virpy.utils
 
 '''
@@ -22,7 +22,7 @@ def create_handler(parser):
     return DomifstatCommand()
 
 
-class DomifstatCommand(virpy.Command):
+class DomifstatCommand(virpy.classes.Command):
     def run(self, conn, args):
 
         obj = virpy.utils.lookupDomain(conn, args.domain)

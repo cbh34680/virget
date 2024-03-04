@@ -3,9 +3,9 @@ import argparse
 import importlib
 import libvirt
 import pprint
-import xml.etree.ElementTree as ET
 
 import virpy
+import virpy.classes
 import virpy.utils
 
 '''
@@ -25,36 +25,30 @@ def create_handler(parser):
     return DomblkinfoCommand()
 
 
-class DomblkinfoCommand(virpy.Command):
+class DomblkinfoCommand(virpy.classes.Command):
     def run(self, conn, args):
 
-        obj = virpy.utils.lookupDomain(conn, args.domain)
-        #pprint.pprint(dir(obj))
+        dom = virpy.utils.lookupDomain(conn, args.domain)
+        #pprint.pprint(dir(dom))
 
-        blocks = virpy.utils.eachDomainStatsBlocks(conn, obj)
+        blocks = virpy.utils.eachDomainStatsBlocks(conn, dom)
 
         data = None
 
-        for block in blocks:
-            target = block['name']
-
-            rec = {
-                'target': target,
-                'capacity': block['capacity'],
-                'allocation': block['allocation'],
-                'physical': block['physical'],
-            }
+        for obj in blocks:
+            #pprint.pprint(obj)
 
             if args.device is not None:
-                if args.device == target:
-                    return rec
-                else:
-                    continue
+                if args.device == obj['name']:
+                    data = obj
+                    break
+
+                continue
 
             if data is None:
                 data = []
 
-            data.append(rec)
+            data.append(obj)
 
         return data
 

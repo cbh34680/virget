@@ -8,16 +8,12 @@ import libvirt
 import pathlib
 import pprint
 import re
+import virpy.classes
 import virpy.utils
 
 __version__ = '1.0.0'
 
-class Command:
-    def __call__(self, *args, **kwargs):
-        return self.run(*args, **kwargs)
-
-    def run(self, *args, **kwargs):
-        raise NotImplementedError()
+DUMP_XML_CDATA_KEY = 'value'
 
 
 # https://stackoverflow.com/questions/45541725/avoiding-console-prints-by-libvirt-qemu-python-apis
@@ -42,6 +38,11 @@ def main():
         parser.add_argument('--pretty', action='store_true')
 
         return run_command(parser)
+
+    except virpy.classes.ObjectNotFoundError as ex:
+        print(f'error: {ex}', file=sys.stderr)
+
+        return 1
 
     except Exception as ex:
         raise ex
@@ -85,25 +86,32 @@ def run_command(parser):
         conn = libvirt.openReadOnly(args.url) if args.readonly else libvirt.open(args.url)
         rslt = handler(conn, args)
 
-        if rslt is not None:
-            if virpy.utils.isScalar(rslt):
-                print(rslt)
+        if rslt is None:
+            return 0
 
-            else:
-                resp = {'data': rslt, }
+        if virpy.utils.isScalar(rslt):
+            print(rslt)
+            return 0
 
-                if args.query:
-                    resp = jmespath.search(args.query, resp)
+        resp = {'data': rslt, }
 
-                dumpopts = {
-                    'ensure_ascii': False,
-                    'indent': 2,
-                    #'sort_keys': True,
-                    #'separators': (',', ': ', ),
-                } if args.pretty else {}
+        if args.query:
+            # execute JMESPath query 
+            resp = jmespath.search(args.query, resp)
 
-                #pprint.pprint(resp, width=180)
-                print(json.dumps(resp, **dumpopts))
+        if virpy.utils.isScalar(resp):
+            print(resp)
+            return 0
+
+        dumpopts = {
+            'ensure_ascii': False,
+            'indent': 2,
+            #'sort_keys': True,
+            #'separators': (',', ': ', ),
+        } if args.pretty else {}
+
+        #pprint.pprint(resp, width=180)
+        print(json.dumps(resp, **dumpopts))
 
     return 0
 

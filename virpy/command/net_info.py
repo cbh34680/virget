@@ -4,6 +4,7 @@ import importlib
 import libvirt
 import pprint
 import virpy
+import virpy.classes
 import virpy.utils
 
 '''
@@ -19,7 +20,7 @@ def create_handler(parser):
     return NetInfoCommand()
 
 
-class NetInfoCommand(virpy.Command):
+class NetInfoCommand(virpy.classes.Command):
     def run(self, conn, args):
 
         obj = virpy.utils.lookupNetwork(conn, args.network)

@@ -3,6 +3,7 @@ import argparse
 import importlib
 import libvirt
 import virpy
+import virpy.classes
 import virpy.utils
 
 '''
@@ -46,7 +47,7 @@ def create_handler(parser):
     return ListCommand()
 
 
-class ListCommand(virpy.Command):
+class ListCommand(virpy.classes.Command):
     def run(self, conn, args):
 
         data = []

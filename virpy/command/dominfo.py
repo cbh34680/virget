@@ -4,6 +4,7 @@ import importlib
 import libvirt
 import pprint
 import virpy
+import virpy.classes
 import virpy.utils
 
 '''
@@ -19,7 +20,7 @@ def create_handler(parser):
     return DominfoCommand()
 
 
-class DominfoCommand(virpy.Command):
+class DominfoCommand(virpy.classes.Command):
     def run(self, conn, args):
 
         obj = virpy.utils.lookupDomain(conn, args.domain)

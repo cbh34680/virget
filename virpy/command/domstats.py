@@ -4,6 +4,7 @@ import importlib
 import libvirt
 import pprint
 import virpy
+import virpy.classes
 import virpy.utils
 
 '''
@@ -50,7 +51,7 @@ def create_handler(parser):
     return DomstatsCommand()
 
 
-class DomstatsCommand(virpy.Command):
+class DomstatsCommand(virpy.classes.Command):
     def run(self, conn, args):
 
         stats_db = {
@@ -91,15 +92,19 @@ class DomstatsCommand(virpy.Command):
 
             if args.domain is not None:
                 if virpy.utils.isIndicateDomain(args.domain, dom):
-                    return rec
+                    data = rec
+                    break
 
-                else:
-                    continue
+                continue
 
             if data is None:
                 data = []
 
             data.append(rec)
+
+        else:
+            if args.domain is not None:
+                raise virpy.classes.ObjectNotFoundError(f"failed to get domain '{args.domain}'")
 
         return data
 
