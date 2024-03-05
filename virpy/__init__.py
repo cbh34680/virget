@@ -31,7 +31,7 @@ def libvirt_callback(_, error):
 
 def main():
     try:
-        parser = argparse.ArgumentParser()
+        parser = argparse.ArgumentParser(prog=__name__.split('.')[0])
         parser.add_argument('-c', '--connect', dest='url')
         parser.add_argument('-r', '--readonly', action='store_true')
         parser.add_argument('--query')
@@ -39,7 +39,7 @@ def main():
 
         return run_command(parser)
 
-    except virpy.classes.ObjectNotFoundError as ex:
+    except (virpy.classes.ObjectNotFoundError, libvirt.libvirtError) as ex:
         print(f'error: {ex}', file=sys.stderr)
 
         return 1
