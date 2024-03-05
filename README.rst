@@ -1,11 +1,10 @@
 virget
 =======
 
-It behaves similar to virsh for some commands.
-The output is in JSON format, so it can be used for batch processing, etc.
+Runs some commands similar to virsh and returns the results in JSON format.
+Therefore, it can be conveniently used for batch processing in shell scripts.
 
-.. note::
-    ``virget`` was tested with version python3.11.
+For example ``virsh list``, ``virsh domblklist`` etc.
 
 Jump to:
 
@@ -24,6 +23,9 @@ Dependencies
 - ``jmespath``: 1.0.1 or greater
 - ``xmltodict``: 0.13.0 or greater
 
+.. note::
+    ``virget`` was tested with version python3.11.
+
 Installation
 ~~~~~~~~~~~
 
@@ -41,7 +43,7 @@ Here, the path is set to bin in the directory obtained from github.
 Examples
 ---------------
 
-You can get similar results to some commands in virsh.
+See help for all available commands.
 
 ::
 
