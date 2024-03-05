@@ -49,8 +49,9 @@ See help for all available commands.
 
     # virget help
 
-Comparison with virsh
+Comparison with virsh.
 
+*list*
 ::
 
     # virsh list 
@@ -68,6 +69,10 @@ Comparison with virsh
         }
       ]
     }
+
+*domblklist*
+::
+
     # virsh domblklist 1
      Target   Source
     -----------------------------------------------------
