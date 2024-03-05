@@ -28,19 +28,28 @@ def create_handler(parser):
 class DomblkinfoCommand(virpy.classes.Command):
     def run(self, conn, args):
 
-        dom = virpy.utils.lookupDomain(conn, args.domain)
-        #pprint.pprint(dir(dom))
+        obj = virpy.utils.lookupDomain(conn, args.domain)
+        #pprint.pprint(dir(obj))
 
-        blocks = virpy.utils.eachDomainStatsBlocks(conn, dom)
+        blocks = virpy.utils.eachDomainStatsBlocks(conn, obj)
 
         data = None
 
-        for obj in blocks:
-            #pprint.pprint(obj)
+        for block in blocks:
+            #pprint.pprint(block)
+
+            target = block['name']
+
+            rec = {
+                'target': target,
+                'capacity': block['capacity'],
+                'allocation': block['allocation'],
+                'physical': block['physical'],
+            }
 
             if args.device is not None:
-                if args.device == obj['name']:
-                    data = obj
+                if args.device == target:
+                    data = rec
                     break
 
                 continue
@@ -48,7 +57,7 @@ class DomblkinfoCommand(virpy.classes.Command):
             if data is None:
                 data = []
 
-            data.append(obj)
+            data.append(rec)
 
         return data
 
