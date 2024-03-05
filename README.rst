@@ -49,6 +49,8 @@ See help for all available commands.
 
     # virget help
 
+or `command files <virpy/command>`_
+
 Comparison with virsh.
 
 *list*
