@@ -1,6 +1,7 @@
 import os
 import sys
 import argparse
+import contextlib
 import importlib
 import jmespath
 import json
@@ -13,7 +14,8 @@ import virpy.utils
 
 __version__ = '1.0.0'
 
-DUMP_XML_CDATA_KEY = 'value'
+DUMP_XML_ATTR_PREFIX = '@'
+DUMP_XML_CDATA_KEY = '#CDATA'
 
 
 # https://stackoverflow.com/questions/45541725/avoiding-console-prints-by-libvirt-qemu-python-apis
@@ -36,6 +38,7 @@ def main():
         parser.add_argument('-r', '--readonly', action='store_true')
         parser.add_argument('--query')
         parser.add_argument('--pretty', action='store_true')
+        parser.add_argument('--version', action='store_true')
 
         return run_command(parser)
 
@@ -53,7 +56,7 @@ def run_command(parser):
     # https://qiita.com/oohira/items/308bbd33a77200a35a3d
 
     sub_parsers = parser.add_subparsers()
-    sub_parsers.add_parser('help', help=f'see: help -h')
+    sub_parsers.add_parser('help', help=f'output this help')
 
     thisdir = pathlib.Path(__file__).parent
     cmdpaths = thisdir.glob('command/*.py')
@@ -64,16 +67,29 @@ def run_command(parser):
 
     for cmd in cmds:
         modname = f'{__name__}.command.{cmd}'
-        mod = importlib.import_module(modname)
 
-        argname = cmd.replace('_', '-')
+        with contextlib.redirect_stdout(None), contextlib.redirect_stderr(None):
+            mod = importlib.import_module(modname)
 
-        cmd_parser = sub_parsers.add_parser(argname, help=f'see: {argname} -h')
+        if hasattr(mod, 'create_handler'):
+            argname = cmd.replace('_', '-')
 
-        handler = mod.create_handler(cmd_parser)
-        cmd_parser.set_defaults(handler=handler)
+            cmd_parser = sub_parsers.add_parser(argname, help=f'see: {argname} -h')
+
+            handler = mod.create_handler(cmd_parser)
+            cmd_parser.set_defaults(handler=handler)
+
+        else:
+            print(f"warning: {mod.__file__} does not provide function 'create_handler'", file=sys.stderr)
+
+            del sys.modules[modname]
+            del mod
 
     args = parser.parse_args()
+
+    if args.version:
+        print(virpy.__version__)
+        return 0
 
     libvirt.registerErrorHandler(f=libvirt_callback, ctx=None)
 

@@ -5,7 +5,6 @@ import importlib
 import libvirt
 import pprint
 import xml.etree.ElementTree as ET
-import xmltodict
 
 import virpy
 import virpy.classes
@@ -21,8 +20,9 @@ python -c 'import libvirt; help(libvirt)'
 def create_handler(parser):
     parser.add_argument('domain')
     parser.add_argument('snapshotname')
-
     parser.add_argument('--security-info', action='store_true')
+    #parser.add_argument('--xpath')
+    #parser.add_argument('--wrap', action='store_true')
 
     return SnapshotDumpjsonCommand()
 
@@ -42,7 +42,8 @@ class SnapshotDumpjsonCommand(virpy.classes.Command):
         flags = virpy.utils.setBitsByArgs(args, flags_db)
 
         xml = obj.getXMLDesc(flags)
-        data = xmltodict.parse(xml, attr_prefix='', cdata_key=virpy.DUMP_XML_CDATA_KEY)
+
+        data = virpy.utils.xmlToDict(xml, args)
 
         return data
 

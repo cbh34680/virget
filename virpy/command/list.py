@@ -40,9 +40,16 @@ def create_handler(parser):
     group6.add_argument('--with-checkpoint', action='store_true')
     group6.add_argument('--without-checkpoint', action='store_true')
 
+    #parser.add_argument('--uuid', action='store_true')
+    #parser.add_argument('--name', action='store_true')
+    #parser.add_argument('--id', action='store_true')
+    #parser.add_argument('--table', action='store_true')
+
     group7 = parser.add_mutually_exclusive_group()
     group7.add_argument('--with-managed-save', action='store_true')
     group7.add_argument('--without-managed-save', action='store_true')
+
+    parser.add_argument('--title', action='store_true')
 
     return ListCommand()
 
@@ -101,6 +108,15 @@ class ListCommand(virpy.classes.Command):
                 'name': obj.name(),
                 'state': virpy.utils.strDomainState(state),
             }
+
+            if args.title:
+                try:
+                    title = obj.metadata(libvirt.VIR_DOMAIN_METADATA_TITLE, None)
+
+                except libvirt.libvirtError:
+                    title = None
+
+                rec['title'] = title
 
             data.append(rec)
 

@@ -88,7 +88,7 @@ class DomstatsCommand(virpy.classes.Command):
         data = None
 
         for dom, stats in conn.getAllDomainStats(stats, flags):
-            rec = {'name': dom.name(), } | formatStats(stats)
+            rec = formatStats(stats)
 
             if args.domain is not None:
                 if virpy.utils.isIndicateDomain(args.domain, dom):
@@ -100,7 +100,7 @@ class DomstatsCommand(virpy.classes.Command):
             if data is None:
                 data = []
 
-            data.append(rec)
+            data.append({'name': dom.name(), } | rec)
 
         else:
             if args.domain is not None:
@@ -112,6 +112,8 @@ class DomstatsCommand(virpy.classes.Command):
 def formatStats(stats):
     ret = {}
 
+    vcpu = {}
+
     for k, v in stats.items():
         key0 = k.split('.')[0]
         sub = ret.setdefault(key0, {})
@@ -120,8 +122,30 @@ def formatStats(stats):
             case 'block' | 'net':
                 pass
 
+            case 'vcpu':
+                try:
+                    key1, *key2x = k.split('.')[1:]
+                    key1 = int(key1)
+
+                except ValueError as ex:
+                    sub[k[len(key0) + 1:]] = v
+
+                else:
+                    vcpu.setdefault(key1, {})['.'.join(key2x)] = v
+
             case _:
                 sub[k[len(key0) + 1:]] = v
+
+    if vcpu:
+        #pprint.pprint(vcpu)
+
+        values = [None] * (max(vcpu.keys()) + 1)
+        #pprint.pprint(values)
+
+        for i, v in vcpu.items():
+            values[i] = v
+
+        ret['vcpu']['values'] = values
 
     for k in ('block', 'net', ):
         if f'{k}.count' in stats:

@@ -18,6 +18,8 @@ def create_handler(parser):
     parser.add_argument('domain')
     parser.add_argument('--completed', action='store_true')
     parser.add_argument('--keep-completed', action='store_true')
+    #parser.add_argument('--anystats', action='store_true')
+    #parser.add_argument('--rawstats', action='store_true')
 
     return DomjobinfoCommand()
 

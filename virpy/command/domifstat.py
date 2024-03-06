@@ -41,6 +41,6 @@ class DomifstatCommand(virpy.classes.Command):
             'tx_drop',
         )
 
-        return {'name': args.interface, } | dict(zip(names, stats))
+        return dict(zip(names, stats))
 
 # EOF

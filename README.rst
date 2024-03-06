@@ -49,7 +49,7 @@ See help for all available commands.
 
     # virget help
 
-or `command files <virpy/command>`_
+or have a look at this `command-files <virpy/command>`_
 
 Comparison with virsh.
 

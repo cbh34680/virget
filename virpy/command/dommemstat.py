@@ -16,6 +16,10 @@ python -c 'import libvirt; help(libvirt)'
 
 def create_handler(parser):
     parser.add_argument('domain')
+    #parser.add_argument('--period', type=int)
+    #parser.add_argument('--config', type=int)
+    #parser.add_argument('--live', type=int)
+    #parser.add_argument('--current', type=int)
 
     return DommemstatCommand()
 

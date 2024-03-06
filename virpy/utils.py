@@ -1,6 +1,8 @@
 import collections.abc
 import functools
 import libvirt
+import xmltodict
+
 import virpy.classes
 
 # https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainState
@@ -94,7 +96,7 @@ def lookupSnapshot(dom, key=None):
         return dom.snapshotLookupByName(key)
 
     except libvirt.libvirtError:
-        raise virpy.classes.ObjectNotFoundError(f"failed to get snapshot '{key}'")
+        raise virpy.classes.ObjectNotFoundError(f"failed to get snapshot '{dom.name()}'")
 
 
 def isScalar(v):
@@ -127,6 +129,14 @@ def eachOrderedStats(stats, key, count_key='count'):
 
 
 def setBitsByArgs(args, db, initval=0):
+
     return functools.reduce(lambda a, b: a | b, (v for k, v in db.items() if getattr(args, k)), initval)
+
+
+def xmlToDict(xml, args):
+
+    return xmltodict.parse(xml,
+        attr_prefix=virpy.DUMP_XML_ATTR_PREFIX, cdata_key=virpy.DUMP_XML_CDATA_KEY)
+
 
 # EOF

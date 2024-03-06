@@ -43,11 +43,10 @@ def create_handler(parser):
     group5.add_argument('--internal', action='store_true')
     group5.add_argument('--external', action='store_true')
 
-    # tree
-    # current
-
+    #parser.add_argument('--tree', action='store_true')
+    #parser.add_argument('--current', action='store_true')
     #parser.add_argument('--descendants', action='store_true')
-    parser.add_argument('--name', action='store_true')
+    #parser.add_argument('--name', action='store_true')
     parser.add_argument('--topological', action='store_true')
 
     return SnapshotListCommand()
@@ -93,24 +92,20 @@ class SnapshotListCommand(virpy.classes.Command):
             #print(parent)
 
 
-            if args.name:
-                rec = name
-
-            else:
-                # creationTime -> datetime -> string
-                ts = int(xmlRoot.findtext('creationTime'))
-                dt = datetime.datetime.fromtimestamp(ts)
-                ct = dt.strftime('%Y-%m-%d %H:%M:%S')
+            # creationTime -> datetime -> string
+            ts = int(xmlRoot.findtext('creationTime'))
+            dt = datetime.datetime.fromtimestamp(ts)
+            ct = dt.strftime('%Y-%m-%d %H:%M:%S')
     
-                rec = {
-                    'name': name,
-                    'creationTime': ct,
-                    'state': xmlRoot.findtext('state'),
-                }
+            rec = {
+                'name': name,
+                'creationTime': ct,
+                'state': xmlRoot.findtext('state'),
+            }
 
-                rec |= {'parent': parent, } if args.parent else {}
+            rec |= {'parent': parent, } if args.parent else {}
 
-                # bool(obj.isCurrent())
+            # bool(obj.isCurrent())
 
             if args.roots:
                 if parent is None:

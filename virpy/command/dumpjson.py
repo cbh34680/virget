@@ -5,7 +5,6 @@ import libvirt
 import virpy
 import virpy.classes
 import virpy.utils
-import xmltodict
 
 '''
 https://libvirt.org/html/
@@ -16,10 +15,12 @@ python -c 'import libvirt; help(libvirt)'
 
 def create_handler(parser):
     parser.add_argument('domain')
-    parser.add_argument('--security-info', action='store_true')
     parser.add_argument('--inactive', action='store_true')
+    parser.add_argument('--security-info', action='store_true')
     parser.add_argument('--update-cpu', action='store_true')
     parser.add_argument('--migratable', action='store_true')
+    #parser.add_argument('--xpath')
+    #parser.add_argument('--wrap', action='store_true')
 
     return DumpjsonCommand()
 
@@ -40,7 +41,7 @@ class DumpjsonCommand(virpy.classes.Command):
         # https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetXMLDesc
         xml = obj.XMLDesc(flags)
 
-        data = xmltodict.parse(xml, attr_prefix='', cdata_key=virpy.DUMP_XML_CDATA_KEY)
+        data = virpy.utils.xmlToDict(xml, args)
 
         return data
 

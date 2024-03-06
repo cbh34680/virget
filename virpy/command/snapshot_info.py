@@ -1,11 +1,11 @@
 import sys
 import argparse
+import contextlib
 import datetime
 import importlib
 import libvirt
 import pprint
 import xml.etree.ElementTree as ET
-import xmltodict
 
 import virpy
 import virpy.classes
@@ -36,24 +36,24 @@ class SnapshotInfoCommand(virpy.classes.Command):
 
         obj = virpy.utils.lookupSnapshot(dom, args.snapshotname)
 
-        try:
+        igclasses = (libvirt.libvirtError, )
+
+        parent = None
+
+        with contextlib.suppress(libvirt.libvirtError):
             parent = obj.getParent().getName()
-        except libvirt.libvirtError:
-            parent = None
 
         xmlRoot = ET.fromstring(obj.getXMLDesc())
-
-        memory = xmlRoot.find('memory')
 
         data = {
             'name': obj.getName(),
             'domain': dom.name(),
             'current': bool(obj.isCurrent()),
             'state': xmlRoot.findtext('state'),
-            'location': memory.attrib['snapshot'],
+            'location': xmlRoot.find('memory').attrib['snapshot'],
             'parent': parent,
             'children': obj.numChildren(),
-            'descendants': -1,
+            'descendants': None,
             'metadata': bool(obj.hasMetadata()),
         }
 

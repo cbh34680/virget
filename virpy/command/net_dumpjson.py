@@ -6,7 +6,6 @@ import pprint
 import virpy
 import virpy.classes
 import virpy.utils
-import xmltodict
 
 '''
 https://libvirt.org/html/
@@ -39,7 +38,7 @@ class NetDumpjsonCommand(virpy.classes.Command):
         # https://libvirt.org/html/libvirt-libvirt-network.html#virNetworkGetXMLDesc
         xml = obj.XMLDesc(flags)
 
-        data = xmltodict.parse(xml, attr_prefix='', cdata_key=virpy.DUMP_XML_CDATA_KEY)
+        data = virpy.utils.xmlToDict(xml, args)
 
         return data
 

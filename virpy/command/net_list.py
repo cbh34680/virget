@@ -26,6 +26,10 @@ def create_handler(parser):
     group3.add_argument('--autostart', action='store_true')
     group3.add_argument('--no-autostart', action='store_true')
 
+    #parser.add_argument('uuid', action='store_true')
+    #parser.add_argument('name', action='store_true')
+    #parser.add_argument('--table', action='store_true')
+
     return NetListCommand()
 
 
