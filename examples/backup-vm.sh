@@ -1,10 +1,10 @@
 #!/bin/bash
 
-set -eu -o posix
+set -eux
 
 : ${2?"Usage: $0 vmname output-dir"}
 
-test -d "$2" || { echo $2: not exist; exit 1; }
+test -d "$2" || { echo $2 not exist; exit 1; }
 
 vmname="$1"
 outdir="$2"
@@ -12,7 +12,7 @@ outdir="$2"
 vmstate=$(virget --pretty --query 'data.state' dominfo ${vmname})
 #echo ${vmname} ${vmstate}
 
-[[ ${vmstate} == 'running' ]] || { echo ${vmname} is not running; exit 1; }
+test ${vmstate} = 'running' || { echo ${vmname} is not running; exit 1; }
 
 bkxml="${outdir}/${vmname}-backup.xml"
 
@@ -25,7 +25,7 @@ do
   jobtype=$(virget --query 'data.type' domjobinfo $vmname)
   echo current jobtype is ${jobtype}
 
-  [[ ${jobtype} == 'none' ]] && break
+  test ${jobtype} = 'none' && break
 
   sleep 3
 done
@@ -37,7 +37,7 @@ do
   jobtype=$(virget --query 'data.type' domjobinfo $vmname --completed)
   echo current jobtype is ${jobtype}
 
-  [[ ${jobtype} == 'none' ]] && break
+  test ${jobtype} = 'none' && break
 
   sleep 3
 done

@@ -2,6 +2,6 @@
 
 : ${1?"Usage: $0 vmname"}
 
-virget --pretty domifaddr --source arp $1 | jq -r '.data[].addrs | map(.addr)'
+virget --pretty --query 'data[].addrs[].addr' domifaddr --source arp $1
 
 exit 0

@@ -88,6 +88,9 @@ class DomstatsCommand(virpy.classes.Command):
         data = None
 
         for dom, stats in conn.getAllDomainStats(stats, flags):
+            #pprint.pprint(stats)
+            stats['state.stateText'] = virpy.utils.strDomainState(stats['state.state'])
+
             rec = formatStats(stats)
 
             if args.domain is not None:

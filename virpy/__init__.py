@@ -1,6 +1,7 @@
 import os
 import sys
 import argparse
+import collections.abc
 import contextlib
 import importlib
 import jmespath
@@ -38,7 +39,9 @@ def main():
         parser.add_argument('-r', '--readonly', action='store_true')
         parser.add_argument('--query')
         parser.add_argument('--pretty', action='store_true')
+        parser.add_argument('--raw-output', action='store_true')
         parser.add_argument('--version', action='store_true')
+        parser.add_argument('--enable-warnings', action='store_true')
 
         return run_command(parser)
 
@@ -112,19 +115,40 @@ def run_command(parser):
         resp = {'data': rslt, }
 
         if args.query:
-            # execute JMESPath query 
-            resp = jmespath.search(args.query, resp)
+            try:
+                # tuple, set, .. --> list
+                resp = json.loads(json.dumps(resp))
 
-        if virpy.utils.isScalar(resp):
-            print(resp)
-            return 0
+                # execute JMESPath query 
+                # ex) python3 /usr/share/doc/python3-jmespath/examples/jp.py -f a.txt 'data[].id'
+
+                #print(f'[{type(resp)}][*{resp}*]{args.query}')
+                resp = jmespath.search(args.query, resp)
+                #print(f'[[{type(resp)}][*{resp}*]')
+
+            except jmespath.exceptions.ParseError as ex:
+                print(f'error: {type(ex).__name__}: {ex}', file=sys.stderr)
+                return 1
+
+        if args.raw_output:
+            if virpy.utils.isScalar(resp):
+                print(resp)
+                return 0
+
+            if not isinstance(resp, collections.abc.Mapping):
+                if isinstance(resp, collections.abc.Sequence):
+                    if all(map(lambda x: virpy.utils.isScalar(x), resp)):
+                        for x in resp:
+                            print(x)
+
+                        return 0
 
         dumpopts = {
             'ensure_ascii': False,
-            'indent': 2,
-            #'sort_keys': True,
-            #'separators': (',', ': ', ),
-        } if args.pretty else {}
+        }
+
+        if args.pretty:
+            dumpopts |= {'indent': 2, }
 
         #pprint.pprint(resp, width=180)
         print(json.dumps(resp, **dumpopts))
