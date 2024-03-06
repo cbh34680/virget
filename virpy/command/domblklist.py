@@ -54,7 +54,7 @@ class DomblklistCommand(virpy.classes.Command):
 
             rec = {
                 'target': target,
-                'source': block['path'],
+                'source': block.get('path'),
             }
 
             if details is not None:
