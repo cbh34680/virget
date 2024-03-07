@@ -9,7 +9,7 @@ test -d "$2" || { echo $2 not exist; exit 1; }
 vmname="$1"
 outdir="$2"
 
-vmstate=$(virget --pretty --query 'data.state' dominfo ${vmname})
+vmstate=$(virget --pretty --query 'data.state' --raw-output dominfo ${vmname})
 #echo ${vmname} ${vmstate}
 
 test ${vmstate} = 'running' || { echo ${vmname} is not running; exit 1; }
@@ -22,7 +22,7 @@ virsh backup-begin ${vmname} --backupxml "${bkxml}"
 echo + phase 1/2
 while :
 do
-  jobtype=$(virget --query 'data.type' domjobinfo $vmname)
+  jobtype=$(virget --query 'data.type' --raw-output domjobinfo $vmname)
   echo current jobtype is ${jobtype}
 
   test ${jobtype} = 'none' && break
@@ -34,7 +34,7 @@ echo
 echo + phase 2/2
 while :
 do
-  jobtype=$(virget --query 'data.type' domjobinfo $vmname --completed)
+  jobtype=$(virget --query 'data.type' --raw-output domjobinfo $vmname --completed)
   echo current jobtype is ${jobtype}
 
   test ${jobtype} = 'none' && break
