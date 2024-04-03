@@ -17,7 +17,7 @@ Getting Started
 To make installation easier, grab the file and add the path to ``bin``
 
 Dependencies
-~~~~~~~~~~~
+------------
 
 - Linux virtualization environment with libvirt
 - ``jmespath``: 1.0.1 or greater
@@ -27,7 +27,7 @@ Dependencies
     ``virget`` was tested with version python3.11.
 
 Installation
-~~~~~~~~~~~
+------------
 
 Here, the path is set to bin in the directory obtained from github.
 
@@ -41,7 +41,7 @@ Here, the path is set to bin in the directory obtained from github.
 
 
 Examples
----------------
+--------
 
 See help for all available commands.
 
