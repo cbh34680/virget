@@ -49,6 +49,24 @@ class DomiflistCommand(virpy.classes.Command):
                 'mac': attrval(iface, 'mac', 'address'),
             }
 
+            if rec['source'] is None:
+                rec['source_bridge'] = attrval(iface, 'source', 'bridge')
+
+            rec['vlan_trunk'] = attrval(iface, 'vlan', 'trunk')
+            if rec['vlan_trunk'] is None:
+                rec['vlan_trunk'] = 'no'
+            else:
+                rec['vlans'] = []
+                for vlan in iface.iter('vlan'):
+                    for tag in vlan.iter('tag'):
+                        vlan_rec = {}
+                        vlan_rec['id'] = tag.attrib['id']
+                        if tag.attrib.get('nativeMode') is not None:
+                            vlan_rec['nativeMode'] = tag.attrib.get('nativeMode')
+                        rec['vlans'].append(vlan_rec)
+            for virtualport in iface.iter('virtualport'):
+                rec['virtualport'] = attrval(virtualport, 'parameters', 'interfaceid')
+
             data.append(rec)
 
         return data
