@@ -36,7 +36,7 @@ class DomiflistCommand(virpy.classes.Command):
             if tagObj is None:
                 return None
 
-            return tagObj.attrib[key]
+            return tagObj.attrib.get(key)
 
         data = []
 
